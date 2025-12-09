@@ -25,7 +25,9 @@ class BaseAgent(ABC, Generic[InputT, OutputT]):
 
     Subclasses must implement:
     - run(): Main execution logic
-    - _build_prompt(): Construct the LLM prompt
+
+    Subclasses may optionally override:
+    - _build_prompt(): Construct the LLM prompt (for standard patterns)
 
     Attributes:
         name: Human-readable agent name
@@ -48,7 +50,7 @@ class BaseAgent(ABC, Generic[InputT, OutputT]):
         self.llm_client = llm_client or LLMClient()
 
     @abstractmethod
-    def run(self, input_data: InputT) -> OutputT:
+    def run(self, input_data: InputT, /) -> OutputT:
         """
         Execute the agent's main logic.
 
@@ -63,18 +65,27 @@ class BaseAgent(ABC, Generic[InputT, OutputT]):
         """
         pass
 
-    @abstractmethod
-    def _build_prompt(self, input_data: InputT) -> str:
+    def _build_prompt(self, input_data: InputT, /) -> str:
         """
         Construct the prompt to send to the LLM.
+
+        Override this method in subclasses that follow the standard pattern
+        of building a prompt from input data. Subclasses with more complex
+        prompt-building needs may define their own methods instead.
 
         Args:
             input_data: Input data to include in the prompt
 
         Returns:
             Formatted prompt string
+
+        Raises:
+            NotImplementedError: If called without being overridden
         """
-        pass
+        raise NotImplementedError(
+            f"{self.__class__.__name__} must implement _build_prompt() "
+            "or use a custom prompt-building method."
+        )
 
     def _parse_response(self, response: str) -> Any:
         """

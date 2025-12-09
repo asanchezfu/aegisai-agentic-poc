@@ -133,7 +133,7 @@ Output valid JSON only."""
         standards = self.standards_lookup.get_standards_for_hazard(taxonomy_ref)
 
         # Step 2: Generate tasks using LLM
-        prompt = self._build_prompt(scored_hazard, hazard_type, hazard_description, standards)
+        prompt = self._build_prompt_with_context(scored_hazard, hazard_type, hazard_description, standards)
         raw_tasks = self.llm_client.extract_json(
             prompt=prompt,
             system_prompt=self.SYSTEM_PROMPT
@@ -267,7 +267,7 @@ Output valid JSON only."""
 
         return tasks
 
-    def _build_prompt(
+    def _build_prompt_with_context(
         self,
         scored_hazard: ScoredHazard,
         hazard_type: str,
