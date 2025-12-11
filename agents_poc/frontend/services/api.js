@@ -5,7 +5,7 @@
  * safety observations through the multi-agent pipeline.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || ''; /*Delete http://localhost for a deafault nginx backend
 
 /**
  * Analyze a safety observation through the AI pipeline.
