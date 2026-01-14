@@ -1,0 +1,75 @@
+[
+  {
+    "id": "455e6a88-058e-47d5-a70c-691d227491bf",
+    "created_at": "2025-12-23 10:17:59.577828",
+    "agent_type": "risk_analyzer",
+    "rating": "amazing",
+    "comment": "It was awesome and good accurate",
+    "original_input": "{\"site\":\"Building A - Ground Level\",\"potential\":\"SAFE_PRACTICE\",\"type\":\"POSITIVE_OBSERVATION\",\"tradeCategoryId\":\"trade_cat_1\",\"tradePartnerId\":\"partner_1\",\"description\":\"Conducted inspection in Zone 6 focusing on confined space entry. Ventilation system tested; readings acceptable. One subcontractor attempted to enter without a permit \u2014 stopped immediately and retrained. Emergency retrieval tripod available but not staged near access point.\",\"photoId\":null,\"observedAt\":\"2025-12-23T15:16:33.012Z\"}",
+    "agent_response": "{\"hazard_id\":\"ecbf60a9-dec1-4b9c-9c44-f5cf44e72c2a\",\"observation_id\":\"a60605e3-ba8f-453c-b24b-d26c7e5d7075\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Subcontractor attempted to enter a confined space without a permit, indicating a lack of adherence to safety protocols.\",\"area\":\"Zone 6\",\"confidence\":0.9}",
+    "session_id": null,
+    "pipeline_run_id": null
+  },
+  {
+    "id": "2647abb2-2683-4494-817b-c939a76e3e93",
+    "created_at": "2025-12-23 10:19:09.713183",
+    "agent_type": "score_manager",
+    "rating": "bad",
+    "comment": "It's not as high in severity",
+    "original_input": "[{\"hazard_id\":\"ecbf60a9-dec1-4b9c-9c44-f5cf44e72c2a\",\"observation_id\":\"a60605e3-ba8f-453c-b24b-d26c7e5d7075\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Subcontractor attempted to enter a confined space without a permit, indicating a lack of adherence to safety protocols.\",\"area\":\"Zone 6\",\"confidence\":0.9},{\"hazard_id\":\"14fcf73a-892f-4bae-aadb-02a4d3563943\",\"observation_id\":\"a60605e3-ba8f-453c-b24b-d26c7e5d7075\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Emergency retrieval tripod was available but not staged near the access point, which could delay rescue in an emergency.\",\"area\":\"Zone 6\",\"confidence\":0.8}]",
+    "agent_response": "{\"hazard_id\":\"ecbf60a9-dec1-4b9c-9c44-f5cf44e72c2a\",\"severity\":4,\"likelihood\":3,\"rpn\":12,\"priority\":\"HIGH\",\"due_by\":\"2025-12-24T10:16:59.929713\",\"culture_score_delta\":0,\"likelihood_adjustment_reason\":null}",
+    "session_id": null,
+    "pipeline_run_id": null
+  },
+  {
+    "id": "a88496c5-87a4-48a1-99e0-6b59a1bed5b5",
+    "created_at": "2025-12-23 10:19:48.846325",
+    "agent_type": "action_planner",
+    "rating": "normal",
+    "comment": null,
+    "original_input": "[{\"hazard_id\":\"ecbf60a9-dec1-4b9c-9c44-f5cf44e72c2a\",\"severity\":4,\"likelihood\":3,\"rpn\":12,\"priority\":\"HIGH\",\"due_by\":\"2025-12-24T10:16:59.929713\",\"culture_score_delta\":0,\"likelihood_adjustment_reason\":null},{\"hazard_id\":\"14fcf73a-892f-4bae-aadb-02a4d3563943\",\"severity\":3,\"likelihood\":3,\"rpn\":9,\"priority\":\"MEDIUM\",\"due_by\":\"2025-12-30T10:16:59.929752\",\"culture_score_delta\":1,\"likelihood_adjustment_reason\":null}]",
+    "agent_response": "{\"plan_id\":\"64835118-7d10-4603-ab5b-8ad9bcddc506\",\"hazard_id\":\"ecbf60a9-dec1-4b9c-9c44-f5cf44e72c2a\",\"tasks\":[{\"task_id\":\"873c4f92-0445-4b2d-89df-54ddbdf8c987\",\"title\":\"Implement Confined Space Entry Permit System\",\"description\":\"Develop and enforce a confined space entry permit system that requires all subcontractors to obtain a permit before entering any confined space. This system should include a checklist of safety protocols that must be reviewed and signed off by a supervisor.\",\"control_type\":\"ADMINISTRATIVE\",\"responsible_role\":\"supervisor\",\"duration_minutes\":240,\"material_requirements\":[\"training_materials\"],\"acceptance_criteria\":\"All subcontractors have completed training and signed the permit checklist.\"},{\"task_id\":\"55a2d566-077a-4e5b-be49-07499d58d810\",\"title\":\"Install Warning Signs for Confined Spaces\",\"description\":\"Place clear and visible warning signs at all entrances to confined spaces to alert workers of the hazards and the need for a permit before entry.\",\"control_type\":\"ENGINEERING\",\"responsible_role\":\"safety_officer\",\"duration_minutes\":60,\"material_requirements\":[\"warning_signs\"],\"acceptance_criteria\":\"All confined space entrances are marked with appropriate warning signs.\"},{\"task_id\":\"fade3c30-e0ec-4359-b2ab-cc1313db071f\",\"title\":\"Conduct Confined Space Safety Training\",\"description\":\"Organize a safety training session for all subcontractors focusing on the hazards of confined spaces, the importance of permits, and the procedures to follow before entering such areas.\",\"control_type\":\"ADMINISTRATIVE\",\"responsible_role\":\"safety_officer\",\"duration_minutes\":180,\"material_requirements\":[\"training_materials\"],\"acceptance_criteria\":\"At least 90% of subcontractors have attended the training session and passed a knowledge assessment.\"}],\"standards_refs\":[\"OSHA General Duty Clause 5(a)(1)\",\"OSHA 1926.20 - General safety and health provisions\",\"ISO 45001:2018 6.1 - Actions to address risks\",\"ISO 45001:2018 8.1 - Operational planning and control\"],\"cost_estimate_usd\":525,\"lead_time_days\":1,\"notes\":null}",
+    "session_id": null,
+    "pipeline_run_id": null
+  },
+  {
+    "id": "97a2f32f-b634-4e90-bc4a-7d681833f132",
+    "created_at": "2025-12-23 10:29:40.186480",
+    "agent_type": "risk_analyzer",
+    "rating": "bad",
+    "comment": "Could improve",
+    "original_input": "{\"site\":\"Building A - Ground Level\",\"potential\":\"SAFE_PRACTICE\",\"type\":\"POSITIVE_OBSERVATION\",\"tradeCategoryId\":\"trade_cat_3\",\"tradePartnerId\":\"partner_3\",\"description\":\"Conducted inspection in Zone 6 focusing on confined space entry. Ventilation system tested; readings acceptable. One subcontractor attempted to enter without a permit \u2014 stopped immediately and retrained. Emergency retrieval tripod available but not staged near access point.\",\"photoId\":null,\"observedAt\":\"2025-12-23T15:28:16.048Z\"}",
+    "agent_response": "{\"hazard_id\":\"9e474389-ccbf-4869-a5f1-28a70cc5097b\",\"observation_id\":\"f6865c48-4578-4b2f-a433-2f4ae4e2ab6e\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Subcontractor attempted to enter confined space without a permit, indicating a lack of adherence to safety protocols.\",\"area\":\"Zone 6\",\"confidence\":0.9}",
+    "session_id": null,
+    "pipeline_run_id": null
+  },
+  {
+    "id": "f4059a1b-35e9-4673-9249-65d6a7c746e4",
+    "created_at": "2026-01-02 11:06:27.306828",
+    "agent_type": "risk_analyzer",
+    "rating": "bad",
+    "comment": "I dont know",
+    "error_categories": [
+      "missing_context",
+      "false_positive"
+    ],
+    "original_input": "{\"site\":\"Building A - Ground Level\",\"potential\":\"SAFE_PRACTICE\",\"type\":\"POSITIVE_OBSERVATION\",\"tradeCategoryId\":\"trade_cat_1\",\"tradePartnerId\":\"partner_2\",\"description\":\" Conducted inspection in Zone 6 focusing on confined space entry. Ventilation system tested; readings acceptable. One subcontractor attempted to enter without a permit \u2014 stopped immediately and retrained. Emergency retrieval tripod available but not staged near access point.\",\"photoId\":null,\"observedAt\":\"2026-01-02T16:02:48.683Z\"}",
+    "agent_response": "{\"hazard_id\":\"46b2f8d1-96cb-47f7-87e4-5a8077612749\",\"observation_id\":\"34180429-e457-4b03-9bce-1300fda5c878\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Subcontractor attempted to enter a confined space without a permit, indicating a lack of adherence to safety protocols.\",\"area\":\"Zone 6\",\"confidence\":0.9}",
+    "session_id": null,
+    "pipeline_run_id": null
+  },
+  {
+    "id": "288fb133-7959-456f-9231-4c95e2174d90",
+    "created_at": "2026-01-02 15:15:38.500944",
+    "agent_type": "score_manager",
+    "rating": "normal",
+    "comment": "Whatever",
+    "error_categories": [
+      "severity_too_low"
+    ],
+    "original_input": "[{\"hazard_id\":\"11b74fa1-d5ce-46f3-8fbb-be59af97c89c\",\"observation_id\":\"e8ae35ee-f767-455b-a711-f8d19f563969\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Subcontractor attempted to enter confined space without a permit, indicating a lack of adherence to safety protocols.\",\"area\":\"Zone 6 - Rooftop\",\"confidence\":0.9},{\"hazard_id\":\"2394dc63-598c-447c-858b-4b3b5f4784e6\",\"observation_id\":\"e8ae35ee-f767-455b-a711-f8d19f563969\",\"type\":\"general_safety\",\"taxonomy_ref\":\"HAZ-GEN-001\",\"description\":\"Emergency retrieval tripod is available but not staged near the access point, which could delay rescue in case of an emergency.\",\"area\":\"Zone 6 - Rooftop\",\"confidence\":0.85}]",
+    "agent_response": "{\"hazard_id\":\"11b74fa1-d5ce-46f3-8fbb-be59af97c89c\",\"severity\":4,\"likelihood\":3,\"rpn\":12,\"priority\":\"HIGH\",\"due_by\":\"2026-01-03T14:02:28.355504\",\"culture_score_delta\":0,\"likelihood_adjustment_reason\":null}",
+    "session_id": null,
+    "pipeline_run_id": null
+  }
+]

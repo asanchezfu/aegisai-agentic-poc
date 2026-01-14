@@ -1,0 +1,52 @@
+// Prisma schema for feedback storage
+// Reference for future AWS S3/database integration
+//
+// To use with Prisma:
+// 1. Install: npm install prisma @prisma/client
+// 2. Generate: npx prisma generate
+// 3. Migrate: npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-py"
+}
+
+datasource db {
+  provider = "sqlite"  // Use SQLite for local dev, can migrate to PostgreSQL for production
+  url      = env("DATABASE_URL")
+}
+
+model AgentFeedback {
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+
+  // Core feedback data
+  agentType       AgentType
+  rating          Rating
+  comment         String?  // Optional comment (max 1000 chars)
+
+  // Context data - stored as JSON strings
+  originalInput   String   // What the agent received (JSON stringified)
+  agentResponse   String   // What the agent produced (JSON stringified)
+
+  // Metadata for tracking
+  sessionId       String?  // Track feedback within a user session
+  pipelineRunId   String?  // Link to specific pipeline execution
+
+  @@index([agentType])
+  @@index([rating])
+  @@index([createdAt])
+}
+
+enum AgentType {
+  RISK_ANALYZER
+  SCORE_MANAGER
+  ACTION_PLANNER
+}
+
+enum Rating {
+  TERRIBLE    // 1 - Very poor response
+  BAD         // 2 - Below expectations
+  NORMAL      // 3 - Acceptable
+  GOOD        // 4 - Above expectations
+  AMAZING     // 5 - Excellent response
+}

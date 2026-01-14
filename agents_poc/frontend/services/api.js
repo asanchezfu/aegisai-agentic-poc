@@ -169,10 +169,66 @@ function mapTaxonomyToCategory(taxonomyRef) {
     return categoryMap[taxonomyRef] || 'General Safety';
 }
 
+/**
+ * Submit feedback for an agent response.
+ *
+ * @param {Object} feedback - The feedback data
+ * @param {string} feedback.agent_type - Agent type (risk_analyzer, score_manager, action_planner)
+ * @param {string} feedback.rating - Rating (terrible, bad, normal, good, amazing)
+ * @param {string} [feedback.comment] - Optional comment
+ * @param {string} feedback.original_input - JSON stringified input
+ * @param {string} feedback.agent_response - JSON stringified response
+ * @returns {Promise<Object>} The created feedback record
+ */
+export async function submitFeedback(feedback) {
+    const response = await fetch(`${API_BASE}/api/feedback`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(feedback),
+    });
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+        throw new Error(error.detail || `Failed to submit feedback: ${response.status}`);
+    }
+
+    return response.json();
+}
+
+/**
+ * Get feedback records with optional filtering.
+ *
+ * @param {Object} [options] - Filter options
+ * @param {string} [options.agent_type] - Filter by agent type
+ * @param {string} [options.rating] - Filter by rating
+ * @param {number} [options.limit] - Maximum records to return (default: 100)
+ * @returns {Promise<Array>} Array of feedback records
+ */
+export async function getFeedback(options = {}) {
+    const params = new URLSearchParams();
+    if (options.agent_type) params.append('agent_type', options.agent_type);
+    if (options.rating) params.append('rating', options.rating);
+    if (options.limit) params.append('limit', options.limit.toString());
+
+    const url = `${API_BASE}/api/feedback${params.toString() ? '?' + params.toString() : ''}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+        throw new Error(error.detail || `Failed to get feedback: ${response.status}`);
+    }
+
+    return response.json();
+}
+
 export default {
     analyzeObservation,
     checkHealth,
     transformHazardToRiskData,
     transformScoredHazardToScoreData,
     transformActionPlanToActions,
+    submitFeedback,
+    getFeedback,
 };

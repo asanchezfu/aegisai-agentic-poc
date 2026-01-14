@@ -16,6 +16,11 @@ from safety_agent.config.settings import Settings
 logger = logging.getLogger(__name__)
 
 
+class LLMConfigurationError(Exception):
+    """Raised when LLM client cannot be initialized due to missing configuration."""
+    pass
+
+
 class LLMClient:
     """
     Client for interacting with LLM APIs.
@@ -54,8 +59,7 @@ class LLMClient:
         Initialize the underlying OpenAI client.
         """
         if not self.settings.openai_api_key:
-            logger.warning("No OpenAI API key configured. LLM features will use stub mode.")
-            return
+            raise LLMConfigurationError("LLM service configuration error")
 
         try:
             self._client = OpenAI(api_key=self.settings.openai_api_key)
@@ -87,8 +91,7 @@ class LLMClient:
             LLMError: If the API call fails
         """
         if self._client is None:
-            logger.warning("LLM client not initialized, using stub mode")
-            return self._stub_complete(prompt)
+            raise LLMConfigurationError("LLM service not available")
 
         try:
             messages = []
@@ -171,44 +174,6 @@ class LLMClient:
             logger.warning(f"Failed to parse JSON from response: {e}")
             logger.debug(f"Raw response: {response}")
             return []
-
-    def _stub_complete(self, prompt: str) -> str:
-        """
-        Stub completion for testing without actual LLM.
-
-        Returns a placeholder response based on prompt keywords.
-        """
-        prompt_lower = prompt.lower()
-
-        if "hazard" in prompt_lower and ("identify" in prompt_lower or "analyze" in prompt_lower):
-            return """[
-  {
-    "type": "falling_object",
-    "description": "Unsecured scaffolding board poses risk of falling",
-    "area": "scaffolding",
-    "confidence": 0.85
-  }
-]"""
-
-        if "severity" in prompt_lower or "likelihood" in prompt_lower:
-            return """[
-  {
-    "severity": 4,
-    "likelihood": 3,
-    "reasoning": "Fall from height can cause serious injury"
-  }
-]"""
-
-        if "action" in prompt_lower or "task" in prompt_lower:
-            return """[
-  {
-    "title": "Install toe boards",
-    "control_type": "ENGINEERING",
-    "duration_minutes": 120
-  }
-]"""
-
-        return "I've analyzed the input but require actual LLM integration to provide detailed analysis."
 
 
 class LLMError(Exception):

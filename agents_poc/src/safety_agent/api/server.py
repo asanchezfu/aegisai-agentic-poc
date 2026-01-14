@@ -23,8 +23,34 @@ from safety_agent.schemas import (
     Hazard,
     ScoredHazard,
     ActionPlan,
+    Feedback,
+    FeedbackCreate,
+    AgentType,
+    Rating,
 )
 from safety_agent.orchestrator.pipeline import ObservationPipeline, PipelineResult
+from safety_agent.llm.client import LLMConfigurationError
+
+import json
+from pathlib import Path
+
+# Feedback storage file
+FEEDBACK_FILE = Path(__file__).parent.parent.parent.parent / "data" / "feedback.json"
+
+
+def load_feedback() -> list[dict]:
+    """Load existing feedback from JSON file."""
+    if FEEDBACK_FILE.exists():
+        with open(FEEDBACK_FILE, 'r') as f:
+            return json.load(f)
+    return []
+
+
+def save_feedback(feedback_list: list[dict]):
+    """Save feedback to JSON file."""
+    FEEDBACK_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(FEEDBACK_FILE, 'w') as f:
+        json.dump(feedback_list, f, indent=2, default=str)
 
 
 def setup_logging():
@@ -153,8 +179,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
+        "http://localhost:3002",
         "http://localhost:5173",
         "http://127.0.0.1:3000",
+        "http://127.0.0.1:3002",
         "http://127.0.0.1:5173",
     ],
     allow_credentials=True,
@@ -252,9 +280,84 @@ async def analyze_observation(request: ObservationRequest):
 
     except HTTPException:
         raise
+    except LLMConfigurationError as e:
+        logger.error(f"LLM service error: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail="LLM service encountered an unexpected configuration error. Please contact administrator."
+        )
     except Exception as e:
         logger.exception("Unexpected error processing observation")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/feedback", response_model=Feedback)
+async def submit_feedback(request: FeedbackCreate):
+    """
+    Submit feedback for an agent response.
+
+    Captures:
+    - agent_type: Which agent (risk_analyzer, score_manager, action_planner)
+    - rating: User rating (terrible, bad, normal, good, amazing)
+    - comment: Optional text feedback
+    - original_input: What the agent received
+    - agent_response: What the agent produced
+    """
+    logger.info("")
+    logger.info("*" * 80)
+    logger.info("FEEDBACK RECEIVED: POST /api/feedback")
+    logger.info("*" * 80)
+    logger.info(f"Agent: {request.agent_type}")
+    logger.info(f"Rating: {request.rating}")
+    if request.error_categories:
+        logger.info(f"Error Categories: {request.error_categories}")
+    if request.comment:
+        logger.info(f"Comment: {request.comment[:50]}...")
+    logger.info("*" * 80)
+
+    # Create feedback record
+    feedback = Feedback(
+        agent_type=request.agent_type,
+        rating=request.rating,
+        comment=request.comment,
+        error_categories=request.error_categories,
+        original_input=request.original_input,
+        agent_response=request.agent_response,
+        session_id=request.session_id,
+        pipeline_run_id=request.pipeline_run_id,
+    )
+
+    # Save to JSON file
+    feedback_list = load_feedback()
+    feedback_list.append(feedback.model_dump())
+    save_feedback(feedback_list)
+
+    logger.info(f"Feedback saved with ID: {feedback.id}")
+
+    return feedback
+
+
+@app.get("/api/feedback", response_model=list[Feedback])
+async def get_feedback(
+    agent_type: Optional[AgentType] = None,
+    rating: Optional[Rating] = None,
+    limit: int = 100,
+):
+    """
+    Retrieve feedback records with optional filtering.
+    """
+    feedback_list = load_feedback()
+
+    # Apply filters
+    if agent_type:
+        feedback_list = [f for f in feedback_list if f.get('agent_type') == agent_type.value]
+    if rating:
+        feedback_list = [f for f in feedback_list if f.get('rating') == rating.value]
+
+    # Sort by created_at descending and limit
+    feedback_list.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+
+    return feedback_list[:limit]
 
 
 def run_server(host: str = "0.0.0.0", port: int = 8000, reload: bool = False):

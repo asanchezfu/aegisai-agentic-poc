@@ -7,6 +7,7 @@ import RiskAnalyzer from '../components/agents/RiskAnalyzer.jsx';
 import ScoreManager from '../components/agents/ScoreManager.jsx';
 import ActionPlanner from '../components/agents/ActionPlanner.jsx';
 import SummaryCard from '../components/summary/SummaryCard.jsx';
+import FeedbackWrapper from '../components/feedback/FeedbackWrapper.jsx';
 import { Button } from '../components/ui/button';
 import {
     analyzeObservation,
@@ -244,13 +245,21 @@ export default function Home() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                         >
-                            <RiskAnalyzer
-                                observation={observation}
-                                isActive={stage === WORKFLOW_STAGES.RISK}
-                                onComplete={handleRiskComplete}
-                                apiData={pipelineResult?.hazards?.[0]}
-                                skipAnimation={viewingFromSummary}
-                            />
+                            <FeedbackWrapper
+                                agentType="risk_analyzer"
+                                agentColor="blue"
+                                originalInput={observation}
+                                agentResponse={pipelineResult?.hazards?.[0]}
+                                enabled={riskReady}
+                            >
+                                <RiskAnalyzer
+                                    observation={observation}
+                                    isActive={stage === WORKFLOW_STAGES.RISK}
+                                    onComplete={handleRiskComplete}
+                                    apiData={pipelineResult?.hazards?.[0]}
+                                    skipAnimation={viewingFromSummary}
+                                />
+                            </FeedbackWrapper>
                             {riskReady && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -286,13 +295,21 @@ export default function Home() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                         >
-                            <ScoreManager
-                                riskData={riskData}
-                                isActive={stage === WORKFLOW_STAGES.SCORE}
-                                onComplete={handleScoreComplete}
-                                apiData={pipelineResult?.scored_hazards?.[0]}
-                                skipAnimation={viewingFromSummary}
-                            />
+                            <FeedbackWrapper
+                                agentType="score_manager"
+                                agentColor="orange"
+                                originalInput={pipelineResult?.hazards}
+                                agentResponse={pipelineResult?.scored_hazards?.[0]}
+                                enabled={scoreReady}
+                            >
+                                <ScoreManager
+                                    riskData={riskData}
+                                    isActive={stage === WORKFLOW_STAGES.SCORE}
+                                    onComplete={handleScoreComplete}
+                                    apiData={pipelineResult?.scored_hazards?.[0]}
+                                    skipAnimation={viewingFromSummary}
+                                />
+                            </FeedbackWrapper>
                             {scoreReady && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -328,13 +345,21 @@ export default function Home() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                         >
-                            <ActionPlanner
-                                scoreData={scoreData}
-                                isActive={stage === WORKFLOW_STAGES.ACTION}
-                                onComplete={handleActionComplete}
-                                apiData={pipelineResult?.action_plans}
-                                skipAnimation={viewingFromSummary}
-                            />
+                            <FeedbackWrapper
+                                agentType="action_planner"
+                                agentColor="green"
+                                originalInput={pipelineResult?.scored_hazards}
+                                agentResponse={pipelineResult?.action_plans?.[0]}
+                                enabled={actionReady}
+                            >
+                                <ActionPlanner
+                                    scoreData={scoreData}
+                                    isActive={stage === WORKFLOW_STAGES.ACTION}
+                                    onComplete={handleActionComplete}
+                                    apiData={pipelineResult?.action_plans}
+                                    skipAnimation={viewingFromSummary}
+                                />
+                            </FeedbackWrapper>
                             {actionReady && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}

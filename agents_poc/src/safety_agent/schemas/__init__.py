@@ -12,6 +12,7 @@ from safety_agent.schemas.observation import Observation, ObservationPotential, 
 from safety_agent.schemas.hazard import Hazard
 from safety_agent.schemas.scored_hazard import ScoredHazard, Priority
 from safety_agent.schemas.action_plan import ActionPlan, Task, ControlHierarchy
+from safety_agent.schemas.feedback import Feedback, FeedbackCreate, AgentType, Rating, ErrorCategory
 
 __all__ = [
     "Observation",
@@ -23,4 +24,9 @@ __all__ = [
     "ActionPlan",
     "Task",
     "ControlHierarchy",
+    "Feedback",
+    "FeedbackCreate",
+    "AgentType",
+    "Rating",
+    "ErrorCategory",
 ]
